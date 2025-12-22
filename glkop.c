@@ -305,7 +305,7 @@ glui32 perform_glk(glui32 funcnum, glui32 numargs, glui32 *arglist)
     /* Grab the string. */
     proto = gidispatch_prototype(funcnum);
     if (!proto)
-      fatal_error("Unknown Glk function.");
+      fatal_error_i("Unknown Glk function.", funcnum);
 
     splot.varglist = arglist;
     splot.numvargs = numargs;
