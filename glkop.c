@@ -165,7 +165,7 @@ static void release_temp_i_array(glui32 *arr, glui32 addr, glui32 len, int passo
 static void **grab_temp_ptr_array(glui32 addr, glui32 len, int objclass, int passin);
 static void release_temp_ptr_array(void **arr, glui32 addr, glui32 len, int objclass, int passout);
 
-static void prepare_glk_args(char *proto, dispatch_splot_t *splot);
+static void prepare_glk_args(glui32 funcnum, char *proto, dispatch_splot_t *splot);
 static void parse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
   int *argnumptr, glui32 subaddress, int subpassin);
 static void unparse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
@@ -292,7 +292,7 @@ glui32 perform_glk(glui32 funcnum, glui32 numargs, glui32 *arglist)
     break;
 
   WrongArgNum:
-    fatal_error("Wrong number of arguments to Glk function.");
+    fatal_error_i("Wrong number of arguments to Glk function.", funcnum);
     break;
 
   FullDispatcher:
@@ -318,7 +318,7 @@ glui32 perform_glk(glui32 funcnum, glui32 numargs, glui32 *arglist)
        arguments again, unloading the data back into Glulx memory. */
 
     /* Phase 0. */
-    prepare_glk_args(proto, &splot);
+    prepare_glk_args(funcnum, proto, &splot);
 
     /* Phase 1. */
     argnum = 0;
@@ -399,7 +399,7 @@ static char *read_prefix(char *cx, int *isref, int *isarray,
    which could be used by the Glk call in question. It then allocates
    space for them.
 */
-static void prepare_glk_args(char *proto, dispatch_splot_t *splot)
+static void prepare_glk_args(glui32 funcnum, char *proto, dispatch_splot_t *splot)
 {
   static gluniversal_t *garglist = NULL;
   static int garglist_size = 0;
@@ -476,7 +476,7 @@ static void prepare_glk_args(char *proto, dispatch_splot_t *splot)
   splot->maxargs = maxargs;
 
   if (splot->numvargs != numvargswanted)
-    fatal_error("Wrong number of arguments to Glk function.");
+    fatal_error_i("Wrong number of arguments to Glk function.", funcnum);
 
   if (garglist && garglist_size < maxargs) {
     glulx_free(garglist);
